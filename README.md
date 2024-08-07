@@ -1,20 +1,31 @@
-![Zenodo DOI: 10.5281/zenodo.5816982](https://zenodo.org/badge/DOI/10.5281/zenodo.5816982.svg)
-
-speedy.f90 is an intermediate complexity atmospheric general circulation model written in modern Fortran. It is based on [SPEEDY](http://users.ictp.it/~kucharsk/speedy-net.html), developed by Fred Kucharski, Franco Molteni and Martin P. King.
+This is forked from the original F90 SPEEDY model with deliberately breaking changes. I removed custom types to allow easy f2py generation and removed the file input-output to allow compilation without NetCDF libraries. 
 
 ## Installation
 
-speedy.f90 has only one dependency: the NetCDF library. To build speedy.f90:
+The f2py setup seems to be quite sensitive to numpy / python versions, but this setup seemed to work on MacOS:
 
-1. Install the [NetCDF library](https://www.unidata.ucar.edu/software/netcdf) and locate the install directory. For example, on my system it is stored in `/usr`.
-2. Set the `NETCDF` environment variable to point to the directory containing the NetCDF `include` and `lib` directories. For example, for my system I run `export NETCDF=/usr`.
-3. Run `build.sh` to build speedy.f90: `bash build.sh`. A binary directory, `bin`, will be created an the speedy.f90 executable `speedy` will be placed in this directory.
-4. Run `run.sh` to run speedy.f90: `bash run.sh`. The output will be stored in `rundir`. By default, speedy.f90 will run for two days and output one NetCDF file for each time step.
+$ conda create -n speedy python=3.11 gfortran numpy
 
-## How to Cite
+Build the `speedy` library with:
 
-Cite the Zenodo DOI given above directly, as well as the following three model description and verification papers based on the original SPEEDY model:
+$ f2py -c params.f90 physical_constants.f90 geometry.f90 auxiliaries.f90 input_output.f90 fftpack.f90 fourier.f90 legendre.f90 spectral.f90 boundaries.f90 mod_radcon.f90 convection.f90 humidity.f90 large_scale_condensation.f90 longwave_radiation.f90 land_model.f90 shortwave_radiation.f90 surface_fluxes.f90 sea_model.f90 sppt.f90 vertical_diffusion.f90 physics.f90 -m speedy
 
-- Molteni, F., Atmospheric simulations using a GCM with simplified physical parametrizations. I: model climatology and variability in multi-decadal experiments. Climate Dynamics 20, 175–191 (2003). https://doi.org/10.1007/s00382-002-0268-2
-- Kucharski, F., Molteni, F. & Bracco, A. Decadal interactions between the western tropical Pacific and the North Atlantic Oscillation. Climate Dynamics 26, 79–91 (2006). https://doi.org/10.1007/s00382-005-0085-5
-- Kucharski, F., Molteni, F., King, M. P., Farneti, R., Kang, I., & Feudale, L., On the Need of Intermediate Complexity General Circulation Models: A “SPEEDY” Example. Bulletin of the American Meteorological Society, 94(1), 25-30 (2013). https://doi.org/10.1175/BAMS-D-11-00238.1
+## Usage
+
+The python interface is quite simple and designed to allow testing individual subroutines, here is an example:
+```python
+import numpy as np
+from speedy import convection
+
+import numpy as np
+
+psa= np.ones((96, 48))
+se = np.ones((96, 48, 8))
+qa = np.ones((96, 48, 8))
+qsat = np.ones((96, 48, 8))
+
+itop, qdif = convection.diagnose_convection(psa, se, qa, qsat)
+
+print(itop)
+print(qdif)
+```
