@@ -1,15 +1,15 @@
 subroutine rffti1(n, wa, ifac)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: n
-    real(p), intent(inout) :: wa(*)
+    real(kind=8), intent(inout) :: wa(*)
     integer, intent(inout) :: ifac(*)
     integer, save :: ntryh(4) = (/ 4, 2, 3, 5 /)
     integer :: nl, nf, i, j, ib, ido, ii, ip, ipm, is, k1, l1, l2, ld, nfm1,&
         & nq, nr, ntry
-    real(p) :: arg, argh, argld, fi, tpi
+    real(kind=8) :: arg, argh, argld, fi, tpi
 
     !***first executable statement  rffti1
       nl = n
@@ -67,12 +67,12 @@ subroutine rffti1(n, wa, ifac)
 end
 
 subroutine rfftb1(n, c, ch, wa, ifac)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: n, ifac(*)
-    real(p), intent(inout) :: ch(*), c(*), wa(*)
+    real(kind=8), intent(inout) :: ch(*), c(*), wa(*)
     integer :: nf, na, l1, iw, ip, l2, ido, idl1, ix2, ix3, ix4, i, k1
 
     !***first executable statement  rfftb1
@@ -134,13 +134,13 @@ subroutine rfftb1(n, c, ch, wa, ifac)
 end
 
 subroutine rfftf1 (n, c, ch, wa, ifac)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: n, ifac(*)
-    real(p), intent(inout) :: ch(*), wa(*)
-    real(p), intent(inout) :: c(*)
+    real(kind=8), intent(inout) :: ch(*), wa(*)
+    real(kind=8), intent(inout) :: c(*)
     integer :: nf, na, l2, iw, k1, kh, ip, l1, ido, idl1, ix2, ix3, ix4, i
 
     !***FIRST EXECUTABLE STATEMENT  RFFTF1
@@ -202,15 +202,15 @@ subroutine rfftf1 (n, c, ch, wa, ifac)
 end
 
 subroutine radb2 (ido, l1, cc, ch, wa1)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,2,*)
-    real(p), intent(inout) :: ch(ido,l1,2), wa1(*)
+    real(kind=8), intent(in) :: cc(ido,2,*)
+    real(kind=8), intent(inout) :: ch(ido,l1,2), wa1(*)
     integer :: k, idp2, ic, i
-    real(p) :: tr2, ti2
+    real(kind=8) :: tr2, ti2
 
     !***FIRST EXECUTABLE STATEMENT  RADB2
       do 101 k=1,l1
@@ -254,15 +254,15 @@ subroutine radb2 (ido, l1, cc, ch, wa1)
 end
 
 subroutine radb3(ido, l1, cc, ch, wa1, wa2)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,3,*), wa1(*), wa2(*)
-    real(p), intent(inout) :: ch(ido,l1,3)
+    real(kind=8), intent(in) :: cc(ido,3,*), wa1(*), wa2(*)
+    real(kind=8), intent(inout) :: ch(ido,l1,3)
     integer :: idp2, ic, i, k
-    real(p) :: taur, taui, tr2, cr2, ci3, ti2, ci2, cr3, dr2, dr3, di2, di3
+    real(kind=8) :: taur, taui, tr2, cr2, ci3, ti2, ci2, cr3, dr2, dr3, di2, di3
 
     !***FIRST EXECUTABLE STATEMENT  RADB3
       taur = -.5
@@ -326,14 +326,14 @@ subroutine radb3(ido, l1, cc, ch, wa1, wa2)
 end
 
 subroutine radb4(ido, l1, cc, ch, wa1, wa2, wa3)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,4,*), wa1(*), wa2(*), wa3(*)
-    real(p), intent(inout) :: ch(ido,l1,4)
-    real(p) :: sqrt2, tr1, tr2, tr3, tr4, ti1, ti2, ti3, ti4, cr3, ci3, cr2, cr4,&
+    real(kind=8), intent(in) :: cc(ido,4,*), wa1(*), wa2(*), wa3(*)
+    real(kind=8), intent(inout) :: ch(ido,l1,4)
+    real(kind=8) :: sqrt2, tr1, tr2, tr3, tr4, ti1, ti2, ti3, ti4, cr3, ci3, cr2, cr4,&
         & ci2, ci4
     integer :: i, k, idp2, ic
 
@@ -424,14 +424,14 @@ subroutine radb4(ido, l1, cc, ch, wa1, wa2, wa3)
 end
 
 subroutine radb5(ido, l1, cc, ch, wa1, wa2, wa3, wa4)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,5,*), wa1(*), wa2(*), wa3(*), wa4(*)
-    real(p), intent(inout) :: ch(ido,l1,5)
-    real(p) :: pi, tr11, ti11, tr12, ti12, ti5, ti4, tr2, tr3, cr2, cr3, ci5, ci4,&
+    real(kind=8), intent(in) :: cc(ido,5,*), wa1(*), wa2(*), wa3(*), wa4(*)
+    real(kind=8), intent(inout) :: ch(ido,l1,5)
+    real(kind=8) :: pi, tr11, ti11, tr12, ti12, ti5, ti4, tr2, tr3, cr2, cr3, ci5, ci4,&
         & ti2, ti3, tr5, tr4, ci2, ci3, cr5, cr4, dr3, dr4, di3, di4, dr5,&
         & dr2, di5, di2
     integer :: i, k, ic, idp2
@@ -545,15 +545,15 @@ subroutine radb5(ido, l1, cc, ch, wa1, wa2, wa3, wa4)
 end
 
 subroutine radbg(ido, ip, l1, idl1, cc, c1, c2, ch, ch2, wa)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, ip, l1, idl1
-    real(p), intent(in) :: cc(ido,ip,*), wa(*)
-    real(p), intent(inout) :: ch(ido,l1,*), c1(ido,l1,*), c2(idl1,*),&
+    real(kind=8), intent(in) :: cc(ido,ip,*), wa(*)
+    real(kind=8), intent(inout) :: ch(ido,l1,*), c1(ido,l1,*), c2(idl1,*),&
           & ch2(idl1,*)
-    real(p) :: tpi, arg, dcp, dsp, ar1, ai1, ar1h, ds2, dc2, ar2, ai2, ar2h
+    real(kind=8) :: tpi, arg, dcp, dsp, ar1, ai1, ar1h, ds2, dc2, ar2, ai2, ar2h
     integer :: idp2, nbd, ipp2, ipph, i, j, k, jc, j2, is, idij, ic, ik,&
         & l, lc
 
@@ -720,14 +720,14 @@ subroutine radbg(ido, ip, l1, idl1, cc, c1, c2, ch, ch2, wa)
       end
 
 subroutine radf2(ido, l1, cc, ch, wa1)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,l1,2), wa1(*)
-    real(p), intent(inout) :: ch(ido,2,*)
-    real(p) :: tr2, ti2
+    real(kind=8), intent(in) :: cc(ido,l1,2), wa1(*)
+    real(kind=8), intent(inout) :: ch(ido,2,*)
+    real(kind=8) :: tr2, ti2
     integer :: i, k, idp2, ic
 
     !***First executable statement  radf2
@@ -772,14 +772,14 @@ subroutine radf2(ido, l1, cc, ch, wa1)
 end
 
 subroutine radf3(ido, l1, cc, ch, wa1, wa2)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,l1,3), wa1(*), wa2(*)
-    real(p), intent(inout) :: ch(ido,3,*)
-    real(p) :: taur, taui, cr2, dr2, di2, dr3, di3, ci2, tr2, ti2, tr3, ti3
+    real(kind=8), intent(in) :: cc(ido,l1,3), wa1(*), wa2(*)
+    real(kind=8), intent(inout) :: ch(ido,3,*)
+    real(kind=8) :: taur, taui, cr2, dr2, di2, dr3, di3, ci2, tr2, ti2, tr3, ti3
     integer :: i, k, idp2, ic
 
     !***First executable statement  radf3
@@ -842,14 +842,14 @@ subroutine radf3(ido, l1, cc, ch, wa1, wa2)
 end
 
 subroutine radf4(ido, l1, cc, ch, wa1, wa2, wa3)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,l1,4), wa1(*), wa2(*), wa3(*)
-    real(p), intent(inout) :: ch(ido,4,*)
-    real(p) :: hsqt2, tr1, tr2, tr3, tr4, cr2, ci2, cr3, ci3, cr4, ci4, ti1, ti2,&
+    real(kind=8), intent(in) :: cc(ido,l1,4), wa1(*), wa2(*), wa3(*)
+    real(kind=8), intent(inout) :: ch(ido,4,*)
+    real(kind=8) :: hsqt2, tr1, tr2, tr3, tr4, cr2, ci2, cr3, ci3, cr4, ci4, ti1, ti2,&
         & ti3, ti4
     integer :: i, k, ic, idp2
 
@@ -936,14 +936,14 @@ subroutine radf4(ido, l1, cc, ch, wa1, wa2, wa3)
 end
 
 subroutine radf5(ido, l1, cc, ch, wa1, wa2, wa3, wa4)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, l1
-    real(p), intent(in) :: cc(ido,l1,5), wa1(*), wa2(*), wa3(*), wa4(*)
-    real(p), intent(inout) :: ch(ido,5,*)
-    real(p) :: pi, tr11, ti11, tr12, ti12, cr2, cr3, cr4, cr5, ci2, ci3, ci4, ci5,&
+    real(kind=8), intent(in) :: cc(ido,l1,5), wa1(*), wa2(*), wa3(*), wa4(*)
+    real(kind=8), intent(inout) :: ch(ido,5,*)
+    real(kind=8) :: pi, tr11, ti11, tr12, ti12, cr2, cr3, cr4, cr5, ci2, ci3, ci4, ci5,&
         & dr2, dr3, dr4, dr5, di2, di3, di4, di5, tr2, tr3, tr4, tr5, ti2, ti3,&
         & ti4, ti5
     integer :: i, k, idp2, ic
@@ -1052,15 +1052,15 @@ subroutine radf5(ido, l1, cc, ch, wa1, wa2, wa3, wa4)
 end
 
 subroutine radfg(ido, ip, l1, idl1, cc, c1, c2, ch, ch2, wa)
-    use types, only: p
+    
 
     implicit none
 
     integer, intent(in) :: ido, ip, l1, idl1
-    real(p), intent(in) :: wa(*)
-    real(p), intent(inout) :: ch(ido,l1,*), cc(ido,ip,*), c1(ido,l1,*),&
+    real(kind=8), intent(in) :: wa(*)
+    real(kind=8), intent(inout) :: ch(ido,l1,*), cc(ido,ip,*), c1(ido,l1,*),&
         & c2(idl1,*), ch2(idl1,*)
-    real(p) :: tpi, arg, dcp, dsp, ar1h, ar2h, ai1, ai2, ar1, ar2, dc2, ds2
+    real(kind=8) :: tpi, arg, dcp, dsp, ar1h, ar2h, ai1, ai2, ar1, ar2, dc2, ds2
     integer :: ipph, ipp2, idp2, nbd, is, ik, j, j2, jc, i, ic, idij, k,&
         & l, lc
 

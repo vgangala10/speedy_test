@@ -1,5 +1,5 @@
 module sea_model
-    use types, only: p
+    
     use params
 
     implicit none
@@ -11,51 +11,51 @@ module sea_model
     public sea_coupling_flag, sst_anomaly_coupling_flag
 
     ! Constant parameters and fields in sea/ice model
-    real(p) :: rhcaps(ix,il) ! 1./heat_capacity (sea)
-    real(p) :: rhcapi(ix,il) ! 1./heat_capacity (ice)
-    real(p) :: cdsea(ix,il) ! 1./dissip_time (sea)
-    real(p) :: cdice(ix,il) ! 1./dissip_time (ice)
-    real(p) :: beta = 1.0 ! Heat flux coef. at sea/ice int.
+    real(kind=8) :: rhcaps(ix,il) ! 1./heat_capacity (sea)
+    real(kind=8) :: rhcapi(ix,il) ! 1./heat_capacity (ice)
+    real(kind=8) :: cdsea(ix,il) ! 1./dissip_time (sea)
+    real(kind=8) :: cdice(ix,il) ! 1./dissip_time (ice)
+    real(kind=8) :: beta = 1.0 ! Heat flux coef. at sea/ice int.
 
     ! Sea masks
-    real(p) :: fmask_s(ix,il) ! Fraction of sea
-    real(p) :: bmask_s(ix,il) ! Binary sea mask
-    real(p) :: deglat_s(il) ! Grid latitudes
+    real(kind=8) :: fmask_s(ix,il) ! Fraction of sea
+    real(kind=8) :: bmask_s(ix,il) ! Binary sea mask
+    real(kind=8) :: deglat_s(il) ! Grid latitudes
 
     ! Monthly-mean climatological fields over sea
-    real(p) :: sst12(ix,il,12) ! Sea/ice surface temperature
-    real(p) :: sice12(ix,il,12) ! Sea ice fraction
+    real(kind=8) :: sst12(ix,il,12) ! Sea/ice surface temperature
+    real(kind=8) :: sice12(ix,il,12) ! Sea ice fraction
 
     ! SST anomaly fields
-    real(p) :: sstan3(ix,il,3) ! SST anomaly in 3 consecutive months
+    real(kind=8) :: sstan3(ix,il,3) ! SST anomaly in 3 consecutive months
 
     ! Climatological fields from model output
-    real(p) :: hfseacl(ix,il) ! Annual-mean heat flux into sea sfc.
-    real(p) :: sstom12(ix,il,12) ! Ocean model SST climatology
+    real(kind=8) :: hfseacl(ix,il) ! Annual-mean heat flux into sea sfc.
+    real(kind=8) :: sstom12(ix,il,12) ! Ocean model SST climatology
 
     ! Daily observed climatological fields over sea
-    real(p) :: sstcl_ob(ix,il) ! Observed clim. SST
-    real(p) :: sicecl_ob(ix,il) ! Clim. sea ice fraction
-    real(p) :: ticecl_ob(ix,il) ! Clim. sea ice temperature
-    real(p) :: sstan_ob(ix,il) ! Daily observed SST anomaly
+    real(kind=8) :: sstcl_ob(ix,il) ! Observed clim. SST
+    real(kind=8) :: sicecl_ob(ix,il) ! Clim. sea ice fraction
+    real(kind=8) :: ticecl_ob(ix,il) ! Clim. sea ice temperature
+    real(kind=8) :: sstan_ob(ix,il) ! Daily observed SST anomaly
 
     ! Daily climatological fields from ocean model
-    real(p) :: sstcl_om(ix,il) ! Ocean model clim. SST
+    real(kind=8) :: sstcl_om(ix,il) ! Ocean model clim. SST
 
     ! Sea sfc. fields used by atmospheric model
-    real(p) :: sst_am(ix,il) ! SST (full-field)
-    real(p) :: sstan_am(ix,il) ! SST anomaly
-    real(p) :: sice_am(ix,il) ! Sea ice fraction
-    real(p) :: tice_am(ix,il) ! Sea ice temperature
+    real(kind=8) :: sst_am(ix,il) ! SST (full-field)
+    real(kind=8) :: sstan_am(ix,il) ! SST anomaly
+    real(kind=8) :: sice_am(ix,il) ! Sea ice fraction
+    real(kind=8) :: tice_am(ix,il) ! Sea ice temperature
 
     ! Sea sfc. fields from ocean/sea-ice model
-    real(p) :: sst_om(ix,il) ! Ocean model SST
-    real(p) :: sice_om(ix,il) ! Model sea ice fraction
-    real(p) :: tice_om(ix,il) ! Model sea ice temperature
-    real(p) :: ssti_om(ix,il) ! Model SST + sea ice temp.
+    real(kind=8) :: sst_om(ix,il) ! Ocean model SST
+    real(kind=8) :: sice_om(ix,il) ! Model sea ice fraction
+    real(kind=8) :: tice_om(ix,il) ! Model sea ice temperature
+    real(kind=8) :: ssti_om(ix,il) ! Model SST + sea ice temp.
 
     ! Weight for obs. SST anomaly in coupled runs
-    real(p) :: wsst_ob(ix,il)
+    real(kind=8) :: wsst_ob(ix,il)
 
     ! Flag for sea-surface temperature coupling
     ! 0 = precribed SST, no coupling
@@ -78,22 +78,25 @@ contains
     ! Initialization of sea model
     subroutine sea_model_init
         use boundaries, only: fmask, fillsf, forchk
-        use date, only: isst0
+        ! use date, only: isst0
         use geometry, only: radang
         use input_output, only: load_boundary_file
 
+        ! FIXME - FIXED FOR TESTING
+        integer :: isst0 = 1 
+
         ! Domain mask
-        real(p) :: dmask(ix,il)
+        real(kind=8) :: dmask(ix,il)
 
         ! Domain flags
         logical :: l_globe, l_northe, l_natlan, l_npacif, l_tropic, l_indian
 
         ! Heat capacities of mixed-layer and sea-ice
-        real(p) :: hcaps(il)
-        real(p) :: hcapi(il)
+        real(kind=8) :: hcaps(il)
+        real(kind=8) :: hcapi(il)
 
         integer :: i, j, month
-        real(p) :: coslat, crad
+        real(kind=8) :: coslat, crad
 
         ! 1. Set geographical domain, heat capacities and dissipation times
         !    for sea (mixed layer) and sea-ice
@@ -101,25 +104,25 @@ contains
         ! Model parameters (default values)
 
         ! ocean mixed layer depth: d + (d0-d)*(cos_lat)^3
-        real(p) :: depth_ml = 60.               ! High-latitude depth
-        real(p) :: dept0_ml = 40.               ! Minimum depth (tropics)
+        real(kind=8) :: depth_ml = 60.               ! High-latitude depth
+        real(kind=8) :: dept0_ml = 40.               ! Minimum depth (tropics)
 
         ! sea-ice depth : d + (d0-d)*(cos_lat)^2
-        real(p) :: depth_ice = 2.5              ! High-latitude depth
-        real(p) :: dept0_ice = 1.5              ! Minimum depth
+        real(kind=8) :: depth_ice = 2.5              ! High-latitude depth
+        real(kind=8) :: dept0_ice = 1.5              ! Minimum depth
 
         ! Dissipation time (days) for sea-surface temp. anomalies
-        real(p) :: tdsst  = 90.
+        real(kind=8) :: tdsst  = 90.
 
         ! Minimum fraction of sea for the definition of anomalies
-        real(p) :: fseamin = 1./3.
+        real(kind=8) :: fseamin = 1./3.
 
         ! Dissipation time (days) for sea-ice temp. anomalies
-        real(p) :: tdice = 30.0
+        real(kind=8) :: tdice = 30.0
 
         ! Threshold for land-sea mask definition (i.e. minimum fraction of
         ! either land or sea)
-        real(p) :: thrsh = 0.1
+        real(kind=8) :: thrsh = 0.1
 
         ! Geographical domain
         ! note : more than one regional domain may be set .true.
@@ -156,17 +159,17 @@ contains
         do month = 1, 12
             sst12(:,:,month) = load_boundary_file("sea_surface_temperature.nc", "sst", month)
 
-            call fillsf(sst12(:,:,month), 0.0_p)
+            call fillsf(sst12(:,:,month), 0.0_8)
         end do
 
-        call forchk(bmask_s, 12, 100.0_p, 400.0_p, 273.0_p, sst12)
+        call forchk(bmask_s, 12, 100.0_8, 400.0_8, 273.0_8, sst12)
 
         ! Sea ice concentration
         do month = 1, 12
             sice12(:,:,month) = max(load_boundary_file("sea_ice.nc", "icec", month), 0.0)
         end do
 
-        call forchk(bmask_s, 12, 0.0_p, 1.0_p, 0.0_p, sice12)
+        call forchk(bmask_s, 12, 0.0_8, 1.0_8, 0.0_8, sice12)
 
         ! SST anomalies for initial and preceding/following months
         if (sst_anomaly_coupling_flag > 0) then
@@ -178,7 +181,7 @@ contains
                 end if
             end do
 
-            call forchk(bmask_s, 3, -50.0_p, 50.0_p, 0.0_p, sstan3)
+            call forchk(bmask_s, 3, -50.0_8, 50.0_8, 0.0_8, sstan3)
         end if
 
         ! Climatological fields for the ocean model (TO BE RECODED)
@@ -251,33 +254,35 @@ contains
     end
 
     subroutine couple_sea_atm(day)
-        use date, only: model_datetime, imont1
-        use interpolation, only: forin5, forint
+        ! use date, only: model_datetime, imont1
+        ! use interpolation, only: forin5, forint
 
         integer, intent(in) :: day
 
         integer :: i, j
-        real(p) :: sstcl0, sstfr
+        real(kind=8) :: sstcl0, sstfr
 
         ! 1. Interpolate climatological fields and obs. SST anomaly
         !    to actual date
 
-        ! Climatological SST
-        call forin5(imont1,sst12,sstcl_ob)
+                ! FIXME - FIXED FOR TESTING
 
-        ! Climatological sea ice fraction
-        call forint(imont1,sice12,sicecl_ob)
+        ! Climatological SST
+        ! call forin5(imont1,sst12,sstcl_ob)
+
+        ! ! Climatological sea ice fraction
+        ! call forint(imont1,sice12,sicecl_ob)
 
         ! SST anomaly
-        if (sst_anomaly_coupling_flag.gt.0) then
-            if (model_datetime%day.eq.1.and.day.gt.0) call obs_ssta
-            call forint (2,sstan3,sstan_ob)
-        end if
+        ! if (sst_anomaly_coupling_flag.gt.0) then
+            ! if (model_datetime%day.eq.1.and.day.gt.0) call obs_ssta
+            ! call forint (2,sstan3,sstan_ob)
+        ! end if
 
         ! Ocean model climatological SST
-        if (sea_coupling_flag.ge.3) then
-            call forin5 (imont1,sstom12,sstcl_om)
-        end if
+        ! if (sea_coupling_flag.ge.3) then
+            ! call forin5 (imont1,sstom12,sstcl_om)
+        ! end if
 
         ! Adjust climatological fields over sea ice
 
@@ -364,7 +369,7 @@ contains
 
     ! Update observed SST anomaly array
     subroutine obs_ssta
-        use date, only: model_datetime, start_datetime
+        ! use date, only: model_datetime, start_datetime
         use input_output, only: load_boundary_file
         use boundaries, only: forchk
 
@@ -374,13 +379,15 @@ contains
         sstan3(:,:,2) = sstan3(:,:,3)
 
         ! Compute next month given initial SST year
-        next_month = (start_datetime%year - issty0) * 12 + model_datetime%month
+        ! next_month = (start_datetime%year - issty0) * 12 + model_datetime%month
+                ! FIXME - FIXED FOR TESTING
+        next_month = 1
 
         ! Read next month SST anomalies
         sstan3(:,:,3) = load_boundary_file("sea_surface_temperature_anomaly.nc", "ssta", &
             & next_month, 420)
 
-        call forchk(bmask_s, 1, -50.0_p, 50.0_p, 0.0_p, sstan3(:,:,3))
+        call forchk(bmask_s, 1, -50.0_8, 50.0_8, 0.0_8, sstan3(:,:,3))
     end
 
     ! Purpose : Integrate slab ocean and sea-ice models for one day
@@ -389,13 +396,13 @@ contains
         use mod_radcon, only: albsea, albice, emisfc
         use physical_constants, only: alhc, sbc
 
-        real(p) :: hflux(ix,il)   ! net sfc. heat flux
-        real(p) :: tanom(ix,il)   ! sfc. temperature anomaly
-        real(p) :: cdis(ix,il)    ! dissipation ceofficient
-        real(p) :: difice(ix,il)  ! Difference in net (downw.) heat flux between ice and sea surface
-        real(p) :: hflux_i(ix,il) ! Net heat flux into sea-ice surface
+        real(kind=8) :: hflux(ix,il)   ! net sfc. heat flux
+        real(kind=8) :: tanom(ix,il)   ! sfc. temperature anomaly
+        real(kind=8) :: cdis(ix,il)    ! dissipation ceofficient
+        real(kind=8) :: difice(ix,il)  ! Difference in net (downw.) heat flux between ice and sea surface
+        real(kind=8) :: hflux_i(ix,il) ! Net heat flux into sea-ice surface
 
-        real(p) :: anom0, sstfr
+        real(kind=8) :: anom0, sstfr
 
         sstfr = 273.2-1.8       ! SST at freezing point
 
@@ -448,10 +455,10 @@ contains
         character(len=6), intent(in) :: cdomain           ! domain name
 
         ! Output variables (initialized by calling routine)
-        real(p), intent(inout) :: dmask(ix,il)         ! domain mask
+        real(kind=8), intent(inout) :: dmask(ix,il)         ! domain mask
 
         integer :: i, j
-        real(p) :: arlat, dlon, rlon, rlonw, wlat
+        real(kind=8) :: arlat, dlon, rlon, rlonw, wlat
 
         print *, 'sea domain : ', cdomain
 

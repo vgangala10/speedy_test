@@ -2,8 +2,6 @@
 !  date: 01/05/2019
 !  For setting all time-dependent forcing fields.
 module forcing
-    use types, only: p
-
     implicit none
 
     private
@@ -30,10 +28,10 @@ contains
 
         integer, intent(in) :: imode !! Mode -> 0 = initialization step, 1 = daily update
 
-        real(p), dimension(ix, il) :: corh, tsfc, tref, psfc, qsfc, qref
-        real(p) :: gamlat(il)
+        real(kind=8), dimension(ix, il) :: corh, tsfc, tref, psfc, qsfc, qref
+        real(kind=8) :: gamlat(il)
 
-        real(p) :: del_co2, pexp
+        real(kind=8) :: del_co2, pexp
         integer :: i, j, iyear_ref
 
         ! time variables for interpolation are set by newdate
@@ -105,7 +103,7 @@ contains
         use params
         use physical_constants, only: grav
 
-        real(p), intent(inout) :: gamlat(il) !! The reference lapse rate
+        real(kind=8), intent(inout) :: gamlat(il) !! The reference lapse rate
 
         integer :: j
 

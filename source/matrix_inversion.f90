@@ -1,5 +1,5 @@
 module matrix_inversion
-    use types, only: p
+    
 
     implicit none
 
@@ -8,13 +8,13 @@ module matrix_inversion
 
 contains
     subroutine ludcmp(a,n,np,indx,d)
-        real(p), intent(inout) :: a(np,np), d
+        real(kind=8), intent(inout) :: a(np,np), d
         integer, intent(inout) :: indx(n)
         integer, intent(in) :: n, np
         integer, parameter :: nmax = 100
-        real(p), parameter :: tiny = 1.0e-20
+        real(kind=8), parameter :: tiny = 1.0e-20
         integer :: i, j, k, imax
-        real(p) :: vv(nmax), aamax, dum, sum
+        real(kind=8) :: vv(nmax), aamax, dum, sum
 
         d = 1.0
 
@@ -80,10 +80,10 @@ contains
     end
 
     subroutine lubksb(a,n,np,indx,b)
-        real(p), intent(inout) :: a(np,np), b(n)
+        real(kind=8), intent(inout) :: a(np,np), b(n)
         integer, intent(in) :: n, np, indx(n)
         integer :: ii, i, ll, j
-        real(p) :: sum
+        real(kind=8) :: sum
 
         ii=0
 
@@ -113,11 +113,11 @@ contains
     end
 
     subroutine inv(a,y,indx,n)
-        real(p), intent(inout) :: a(n,n), y(n,n)
+        real(kind=8), intent(inout) :: a(n,n), y(n,n)
         integer, intent(inout) :: indx(n)
         integer, intent(in) :: n
         integer :: i
-        real(p) :: d
+        real(kind=8) :: d
 
         y = 0.0
 

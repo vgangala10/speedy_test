@@ -6,7 +6,6 @@
 !  surface geopotential (i.e. the orography), the filtered surface geopotential
 !  (i.e. the smoothed orography) and the bare-land annual-mean albedo.
 module boundaries
-    use types, only: p
     use params
 
     implicit none
@@ -15,12 +14,12 @@ module boundaries
     public initialize_boundaries, fillsf, forchk
     public fmask, phi0, phis0, alb0
 
-    real(p) :: fmask(ix,il) !! Original (fractional) land-sea mask
+    real(kind=8) :: fmask(ix,il) !! Original (fractional) land-sea mask
 
     ! Time invariant surface fields
-    real(p) :: phi0(ix,il)  !! Unfiltered surface geopotential
-    real(p) :: phis0(ix,il) !! Spectrally-filtered surface geopotential
-    real(p) :: alb0(ix,il)  !! Bare-land annual-mean albedo
+    real(kind=8) :: phi0(ix,il)  !! Unfiltered surface geopotential
+    real(kind=8) :: phis0(ix,il) !! Spectrally-filtered surface geopotential
+    real(kind=8) :: alb0(ix,il)  !! Bare-land annual-mean albedo
 
 contains
     !> Initialize boundary conditions (land-sea mask, surface geopotential
@@ -45,12 +44,12 @@ contains
     !> Check consistency of surface fields with land-sea mask and set undefined
     !  values to a constant (to avoid over/underflow).
     subroutine forchk(fmask, nf, fmin, fmax, fset, field)
-        real(p), intent(in)    :: fmask(ix,il)    !! The fractional land-sea mask
+        real(kind=8), intent(in)    :: fmask(ix,il)    !! The fractional land-sea mask
         integer, intent(in)    :: nf              !! The number of input 2D fields
-        real(p), intent(in)    :: fmin            !! The minimum allowable value
-        real(p), intent(in)    :: fmax            !! The maximum allowable value
-        real(p), intent(in)    :: fset            !! Replacement for undefined values
-        real(p), intent(inout) :: field(ix,il,nf) !! The output field
+        real(kind=8), intent(in)    :: fmin            !! The minimum allowable value
+        real(kind=8), intent(in)    :: fmax            !! The maximum allowable value
+        real(kind=8), intent(in)    :: fset            !! Replacement for undefined values
+        real(kind=8), intent(inout) :: field(ix,il,nf) !! The output field
 
         integer :: i, j, jf, nfault
 
@@ -75,10 +74,10 @@ contains
     subroutine spectral_truncation(fg1, fg2)
         use spectral, only: grid_to_spec, spec_to_grid
 
-        real(p), intent(inout) :: fg1(ix,il) !! Original grid-point field
-        real(p), intent(inout) :: fg2(ix,il) !! Filtered grid-point field
+        real(kind=8), intent(inout) :: fg1(ix,il) !! Original grid-point field
+        real(kind=8), intent(inout) :: fg2(ix,il) !! Filtered grid-point field
 
-        complex(p) :: fsp(mx,nx)
+        complex(kind=8) :: fsp(mx,nx)
         integer :: n, m, total_wavenumber
 
         fsp = grid_to_spec(fg1)
@@ -96,13 +95,13 @@ contains
     !> Replace missing values in surface fields.
     !  @note It is assumed that non-missing values exist near the Equator.
     subroutine fillsf(sf, fmis)
-        real(p), intent(inout) :: sf(ix,il) !! Field to replace missing values in
-        real(p), intent(in)    :: fmis      !! Replacement for missing values
+        real(kind=8), intent(inout) :: sf(ix,il) !! Field to replace missing values in
+        real(kind=8), intent(in)    :: fmis      !! Replacement for missing values
 
-        real(p) :: sf2(0:ix+1)
+        real(kind=8) :: sf2(0:ix+1)
 
         integer :: hemisphere, j, j1, j2, j3, i, nmis
-        real(p) :: fmean
+        real(kind=8) :: fmean
 
         do hemisphere = 1, 2
            if (hemisphere == 1) then

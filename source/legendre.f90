@@ -2,7 +2,7 @@
 !  date: 09/05/2019
 !  For computing direct and inverse Legendre transforms.
 module legendre
-    use types, only: p
+    
     use params
 
     implicit none
@@ -11,11 +11,11 @@ module legendre
     public initialize_legendre, legendre_dir, legendre_inv
     public epsi
 
-    real(p) :: cpol(2*mx,nx,iy)  !! The Legendre polynomials
-    real(p) :: epsi(mx+1,nx+1)   !! Epsilon function used for various spectral calculations
-    real(p) :: repsi(mx+1,nx+1)  !! 1/epsi
+    real(kind=8) :: cpol(2*mx,nx,iy)  !! The Legendre polynomials
+    real(kind=8) :: epsi(mx+1,nx+1)   !! Epsilon function used for various spectral calculations
+    real(kind=8) :: repsi(mx+1,nx+1)  !! 1/epsi
     integer :: nsh2(nx)       !! Used for defining shape of spectral triangle
-    real(p), dimension(iy) :: wt !! Gaussian weights used for integration in direct Legendre transform
+    real(kind=8), dimension(iy) :: wt !! Gaussian weights used for integration in direct Legendre transform
 
 contains
     !> Initializes Legendre transforms and constants used for other subroutines
@@ -23,7 +23,7 @@ contains
     subroutine initialize_legendre
         use physical_constants, only: rearth
 
-        real(p) :: emm2, ell2, poly(mx,nx)
+        real(kind=8) :: emm2, ell2, poly(mx,nx)
         integer :: j, n, m, m1, m2, mm(mx), wavenum_tot(mx,nx)
 
         ! First compute Gaussian latitudes and weights at the IY points from
@@ -73,10 +73,10 @@ contains
     !> Computes inverse Legendre transformation.
     function legendre_inv(input) result(output)
         ! 2*mx because these arrays actually represent complex variables
-        real(p), intent(in) :: input(2*mx,nx)  !! Input field
-        real(p)             :: output(2*mx,il) !! Output field
+        real(kind=8), intent(in) :: input(2*mx,nx)  !! Input field
+        real(kind=8)             :: output(2*mx,il) !! Output field
 
-        real(p) :: even(2*mx),odd(2*mx)
+        real(kind=8) :: even(2*mx),odd(2*mx)
         integer :: j, j1, m, n
 
         ! Loop over Northern Hemisphere, computing odd and even decomposition of
@@ -113,10 +113,10 @@ contains
     !> Computes direct Legendre transformation.
     function legendre_dir(input) result(output)
         ! 2*mx because these arrays actually represent complex variables
-        real(p), intent(in) :: input(2*mx,il)  !! Input field
-        real(p)             :: output(2*mx,nx) !! Output field
+        real(kind=8), intent(in) :: input(2*mx,il)  !! Input field
+        real(kind=8)             :: output(2*mx,nx) !! Output field
 
-        real(p) :: even(2*mx,iy), odd(2*mx,iy)
+        real(kind=8) :: even(2*mx,iy), odd(2*mx,iy)
         integer :: j, j1, m, n
 
         ! Initialise output array
@@ -159,9 +159,9 @@ contains
         ! A slightly modified version of a program in Numerical Recipes
         ! (Cambridge Univ. Press, 1989).
 
-        real(p) :: w(iy) !! Weights in gaussian quadrature (sum should equal 1.0)
+        real(kind=8) :: w(iy) !! Weights in gaussian quadrature (sum should equal 1.0)
 
-        real(p) :: z,z1,p1,p2,p3,pp
+        real(kind=8) :: z,z1,p1,p2,p3,pp
         integer :: n, j, i
 
         n = 2*iy
@@ -169,19 +169,19 @@ contains
         z1 = 2.0
 
         do i = 1, iy
-            z = cos(3.141592654_p*(real(i,p) - 0.25_p)/(real(n,p) + 0.5_p))
+            z = cos(3.141592654_8*(real(i, 8) - 0.25_8)/(real(n, 8) + 0.5_8))
 
-            do while (abs(z - z1) > epsilon(real(1.0,p)))
-                p1 = 1.0_p
-                p2 = 0.0_p
+            do while (abs(z - z1) > epsilon(real(1.0, 8)))
+                p1 = 1.0_8
+                p2 = 0.0_8
 
                 do j = 1, n
                     p3 = p2
                     p2 = p1
-                    p1 = ((2.0_p*real(j,p) - 1.0_p)*z*p2 - (real(j,p) - 1.0_p)*p3)/j
+                    p1 = ((2.0_8*real(j, 8) - 1.0_8)*z*p2 - (real(j, 8) - 1.0_8)*p3)/j
                 end do
 
-                pp = real(n,p)*(z*p1 - p2)/(z**2.0_p - 1.0_p)
+                pp = real(n, 8)*(z*p1 - p2)/(z**2.0_8 - 1.0_8)
                 z1 = z
                 z = z1 - p1/pp
             end do
@@ -195,12 +195,12 @@ contains
         use geometry, only: sia_half, coa_half
 
         integer, intent(in) :: j              !! The latitude to compute the polynomials at
-        real(p)                :: poly(mx,nx) !! The Legendre polynomials
+        real(kind=8)                :: poly(mx,nx) !! The Legendre polynomials
 
-        real(p), parameter :: small = 1.e-30
-        real(p) :: consq(mx)
+        real(kind=8), parameter :: small = 1.e-30
+        real(kind=8) :: consq(mx)
         integer :: m, n
-        real(p) :: alp(mx+1,nx), x, y
+        real(kind=8) :: alp(mx+1,nx), x, y
         y = coa_half(j)
         x = sia_half(j)
 

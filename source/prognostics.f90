@@ -2,7 +2,7 @@
 !  date: 04/07/2019
 !  For storing and initializing prognostic spectral variables for model dynamics, and geopotential.
 module prognostics
-    use types, only: p
+    
     use params
 
     implicit none
@@ -13,15 +13,15 @@ module prognostics
     public initialize_prognostics
 
     ! Prognostic spectral variables
-    complex(p) :: vor(mx,nx,kx,2)    !! Vorticity
-    complex(p) :: div(mx,nx,kx,2)    !! Divergence
-    complex(p) :: t(mx,nx,kx,2)      !! Absolute temperature
-    complex(p) :: ps(mx,nx,2)        !! Log of (normalised) surface pressure (p_s/p0)
-    complex(p) :: tr(mx,nx,kx,2,ntr) !! Tracers (tr(1): specific humidity in g/kg)
+    complex(kind=8) :: vor(mx,nx,kx,2)    !! Vorticity
+    complex(kind=8) :: div(mx,nx,kx,2)    !! Divergence
+    complex(kind=8) :: t(mx,nx,kx,2)      !! Absolute temperature
+    complex(kind=8) :: ps(mx,nx,2)        !! Log of (normalised) surface pressure (p_s/p0)
+    complex(kind=8) :: tr(mx,nx,kx,2,ntr) !! Tracers (tr(1): specific humidity in g/kg)
 
     ! Geopotential
-    complex(p) :: phi(mx,nx,kx) !! Atmospheric geopotential
-    complex(p) :: phis(mx,nx)   !! Surface geopotential
+    complex(kind=8) :: phi(mx,nx,kx) !! Atmospheric geopotential
+    complex(kind=8) :: phis(mx,nx)   !! Surface geopotential
 
 contains
     !> Initializes all spectral variables starting from either a reference
@@ -41,9 +41,9 @@ contains
         use input_output, only: output
         use geopotential, only: get_geopotential
 
-        complex(p) :: surfs(mx,nx)
-        real(p) :: surfg(ix,il)
-        real(p) :: gam1, esref, gam2, qexp, qref, rgam, rgamr, rlog0, tref, ttop
+        complex(kind=8) :: surfs(mx,nx)
+        real(kind=8) :: surfg(ix,il)
+        real(kind=8) :: gam1, esref, gam2, qexp, qref, rgam, rgamr, rlog0, tref, ttop
         integer :: i, j, k
 
         gam1 = gamma/(1000.0*grav)

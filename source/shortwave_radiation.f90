@@ -1,6 +1,6 @@
 !> Parametrization of short-wave radiation
 module shortwave_radiation
-    use types, only: p
+    
     use params
 
     implicit none
@@ -11,56 +11,56 @@ module shortwave_radiation
     public increase_co2, compute_shortwave
 
     ! Shortwave radiation and cloud constants
-    real(p), parameter :: solc    = 342.0 !! Solar constant (area averaged) in W/m^2
-    real(p), parameter :: rhcl1   = 0.30  !! Relative humidity threshold corresponding to
+    real(kind=8), parameter :: solc    = 342.0 !! Solar constant (area averaged) in W/m^2
+    real(kind=8), parameter :: rhcl1   = 0.30  !! Relative humidity threshold corresponding to
                                           !! cloud cover = 0
-    real(p), parameter :: rhcl2   = 1.00  !! Relative humidity correponding to cloud cover = 1
-    real(p), parameter :: qacl    = 0.20  !! Specific humidity threshold for cloud cover
-    real(p), parameter :: wpcl    = 0.2   !! Cloud cover weight for the square-root of precipitation
+    real(kind=8), parameter :: rhcl2   = 1.00  !! Relative humidity correponding to cloud cover = 1
+    real(kind=8), parameter :: qacl    = 0.20  !! Specific humidity threshold for cloud cover
+    real(kind=8), parameter :: wpcl    = 0.2   !! Cloud cover weight for the square-root of precipitation
                                           !! (for p = 1 mm/day)
-    real(p), parameter :: pmaxcl  = 10.0  !! Maximum value of precipitation (mm/day) contributing to
+    real(kind=8), parameter :: pmaxcl  = 10.0  !! Maximum value of precipitation (mm/day) contributing to
                                           !! cloud cover
-    real(p), parameter :: clsmax  = 0.60  !! Maximum stratiform cloud cover
-    real(p), parameter :: clsminl = 0.15  !! Minimum stratiform cloud cover over land (for RH = 1)
-    real(p), parameter :: gse_s0  = 0.25  !! Gradient of dry static energy corresponding to
+    real(kind=8), parameter :: clsmax  = 0.60  !! Maximum stratiform cloud cover
+    real(kind=8), parameter :: clsminl = 0.15  !! Minimum stratiform cloud cover over land (for RH = 1)
+    real(kind=8), parameter :: gse_s0  = 0.25  !! Gradient of dry static energy corresponding to
                                           !! stratiform cloud cover = 0
-    real(p), parameter :: gse_s1  = 0.40  !! Gradient of dry static energy corresponding to
+    real(kind=8), parameter :: gse_s1  = 0.40  !! Gradient of dry static energy corresponding to
                                           !! stratiform cloud cover = 1
-    real(p), parameter :: albcl   = 0.43  !! Cloud albedo (for cloud cover = 1)
-    real(p), parameter :: albcls  = 0.50  !! Stratiform cloud albedo (for st. cloud cover = 1)
-    real(p), parameter :: epssw   = 0.020 !! Fraction of incoming solar radiation absorbed by ozone
+    real(kind=8), parameter :: albcl   = 0.43  !! Cloud albedo (for cloud cover = 1)
+    real(kind=8), parameter :: albcls  = 0.50  !! Stratiform cloud albedo (for st. cloud cover = 1)
+    real(kind=8), parameter :: epssw   = 0.020 !! Fraction of incoming solar radiation absorbed by ozone
 
     ! Shortwave absorptivities (for dp = 10^5 Pa)
-    real(p), parameter :: absdry =  0.033 !! Absorptivity of dry air (visible band)
-    real(p), parameter :: absaer =  0.033 !! Absorptivity of aerosols (visible band)
-    real(p), parameter :: abswv1 =  0.022 !! Absorptivity of water vapour
+    real(kind=8), parameter :: absdry =  0.033 !! Absorptivity of dry air (visible band)
+    real(kind=8), parameter :: absaer =  0.033 !! Absorptivity of aerosols (visible band)
+    real(kind=8), parameter :: abswv1 =  0.022 !! Absorptivity of water vapour
                                           !! (visible band, for dq = 1 g/kg)
-    real(p), parameter :: abswv2 = 15.000 !! Absorptivity of water vapour
+    real(kind=8), parameter :: abswv2 = 15.000 !! Absorptivity of water vapour
                                           !! (near IR band, for dq = 1 g/kg)
-    real(p), parameter :: abscl1 =  0.015 !! Absorptivity of clouds (visible band, maximum value)
-    real(p), parameter :: abscl2 =  0.15  !! Absorptivity of clouds
+    real(kind=8), parameter :: abscl1 =  0.015 !! Absorptivity of clouds (visible band, maximum value)
+    real(kind=8), parameter :: abscl2 =  0.15  !! Absorptivity of clouds
                                           !! (visible band, for dq_base = 1 g/kg)
 
     ! Longwave absorptivities (per dp = 10^5 Pa)
-    real(p), parameter :: ablwin =  0.3 !! Absorptivity of air in "window" band
-    real(p)            :: ablco2 =  6.0 !! Absorptivity of air in CO2 band
-    real(p), parameter :: ablwv1 =  0.7 !! Absorptivity of water vapour in H2O band 1 (weak),
+    real(kind=8), parameter :: ablwin =  0.3 !! Absorptivity of air in "window" band
+    real(kind=8)            :: ablco2 =  6.0 !! Absorptivity of air in CO2 band
+    real(kind=8), parameter :: ablwv1 =  0.7 !! Absorptivity of water vapour in H2O band 1 (weak),
                                         !! (for dq = 1 g/kg)
-    real(p), parameter :: ablwv2 = 50.0 !! Absorptivity of water vapour in H2O band 2 (strong),
+    real(kind=8), parameter :: ablwv2 = 50.0 !! Absorptivity of water vapour in H2O band 2 (strong),
                                         !! (for dq = 1 g/kg)
-    real(p), parameter :: ablcl1 = 12.0 !! Absorptivity of "thick" clouds in window band
+    real(kind=8), parameter :: ablcl1 = 12.0 !! Absorptivity of "thick" clouds in window band
                                         !! (below cloud top)
-    real(p), parameter :: ablcl2 =  0.6 !! Absorptivity of "thin" upper clouds in window and H2O
+    real(kind=8), parameter :: ablcl2 =  0.6 !! Absorptivity of "thin" upper clouds in window and H2O
                                         !! bands
 
     ! Zonally-averaged fields for SW/LW scheme (updated in sol_oz)
-    real(p), dimension(ix,il) :: fsol   !! Flux of incoming solar radiation
-    real(p), dimension(ix,il) :: ozone  !! Flux absorbed by ozone (lower stratosphere)
-    real(p), dimension(ix,il) :: ozupp  !! Flux absorbed by ozone (upper stratosphere)
-    real(p), dimension(ix,il) :: zenit  !! Optical depth ratio (function of solar zenith angle)
-    real(p), dimension(ix,il) :: stratz !! Stratospheric correction for polar night
+    real(kind=8), dimension(ix,il) :: fsol   !! Flux of incoming solar radiation
+    real(kind=8), dimension(ix,il) :: ozone  !! Flux absorbed by ozone (lower stratosphere)
+    real(kind=8), dimension(ix,il) :: ozupp  !! Flux absorbed by ozone (upper stratosphere)
+    real(kind=8), dimension(ix,il) :: zenit  !! Optical depth ratio (function of solar zenith angle)
+    real(kind=8), dimension(ix,il) :: stratz !! Stratospheric correction for polar night
 
-    real(p), dimension(ix,il) :: qcloud !! Equivalent specific humidity of clouds
+    real(kind=8), dimension(ix,il) :: qcloud !! Equivalent specific humidity of clouds
 
     ! Logical flags to control shortwave radiation behaviour
     logical, parameter :: increase_co2 = .false. !! Flag for CO2 optical thickness increase
@@ -75,23 +75,23 @@ contains
         use geometry, only: fsg, dhs
         use mod_radcon
 
-        real(p), intent(in) :: psa(ix,il)       !! Normalised surface pressure [p/p0]
-        real(p), intent(in) :: qa(ix,il,kx)     !! Specific humidity [g/kg]
+        real(kind=8), intent(in) :: psa(ix,il)       !! Normalised surface pressure [p/p0]
+        real(kind=8), intent(in) :: qa(ix,il,kx)     !! Specific humidity [g/kg]
         integer, intent(in) :: icltop(ix,il)    !! Cloud top level
-        real(p), intent(in) :: cloudc(ix,il)    !! Total cloud cover
-        real(p), intent(in) :: clstr(ix,il)     !! Stratiform cloud cover
-        real(p), intent(out) :: fsfcd(ix,il)    !! Total downward flux of short-wave radiation at
+        real(kind=8), intent(in) :: cloudc(ix,il)    !! Total cloud cover
+        real(kind=8), intent(in) :: clstr(ix,il)     !! Stratiform cloud cover
+        real(kind=8), intent(out) :: fsfcd(ix,il)    !! Total downward flux of short-wave radiation at
                                                 !! the surface
-        real(p), intent(out) :: fsfc(ix,il)     !! Net downward flux of short-wave radiation at the
+        real(kind=8), intent(out) :: fsfc(ix,il)     !! Net downward flux of short-wave radiation at the
                                                 !! surface
-        real(p), intent(out) :: ftop(ix,il)     !! Net downward flux of short-wave radiation at the
+        real(kind=8), intent(out) :: ftop(ix,il)     !! Net downward flux of short-wave radiation at the
                                                 !! top of the atmosphere
-        real(p), intent(out) :: dfabs(ix,il,kx) !! Flux of short-wave radiation absorbed in each
+        real(kind=8), intent(out) :: dfabs(ix,il,kx) !! Flux of short-wave radiation absorbed in each
                                                 !! atmospheric layer
 
         integer :: i, j, k, nl1
-        real(p) :: acloud(ix,il), psaz(ix,il), abs1, acloud1, deltap, eps1
-        real(p) :: fband1, fband2
+        real(kind=8) :: acloud(ix,il), psaz(ix,il), abs1, acloud1, deltap, eps1
+        real(kind=8) :: fband1, fband2
 
         nl1 = kx - 1
 
@@ -238,10 +238,10 @@ contains
     subroutine get_zonal_average_fields(tyear)
         use geometry, only: sia, coa
 
-        real(p), intent(in) :: tyear !! time as fraction of year (0-1, 0 = 1jan.h00)
+        real(kind=8), intent(in) :: tyear !! time as fraction of year (0-1, 0 = 1jan.h00)
 
-        real(p) :: topsr(il), alpha, azen, coz1, coz2, dalpha, flat2, fs0
-        real(p) :: nzen, rzen
+        real(kind=8) :: topsr(il), alpha, azen, coz1, coz2, dalpha, flat2, fs0
+        real(kind=8) :: nzen, rzen
         integer :: j
 
         ! alpha = year phase ( 0 - 2pi, 0 = winter solstice = 22dec.h00 )
@@ -287,14 +287,14 @@ contains
     subroutine solar(tyear, csol, topsr)
         use geometry, only: coa, sia
 
-        real(p), intent(in) :: tyear     !! time as fraction of year (0-1, 0 = 1jan.h00)
-        real(p), intent(in) :: csol       !! The solar constant [W/m^2]
-        real(p), intent(out) :: topsr(il) !! Daily-average insolation at the top of the atmosphere
+        real(kind=8), intent(in) :: tyear     !! time as fraction of year (0-1, 0 = 1jan.h00)
+        real(kind=8), intent(in) :: csol       !! The solar constant [W/m^2]
+        real(kind=8), intent(out) :: topsr(il) !! Daily-average insolation at the top of the atmosphere
                                           !! as a function of latitude
 
         integer :: j
-        real(p) :: ca1, ca2, ca3, cdecl, ch0, csolp, decl, fdis, h0, alpha, pigr, sa1
-        real(p) :: sa2, sa3, sdecl, sh0, tdecl
+        real(kind=8) :: ca1, ca2, ca3, cdecl, ch0, csolp, decl, fdis, h0, alpha, pigr, sa1
+        real(kind=8) :: sa2, sa3, sdecl, sh0, tdecl
 
         ! 1. Compute declination angle and Earth-Sun distance factor
         pigr  = 2.0*asin(1.0)
@@ -331,18 +331,18 @@ contains
     !>  Compute cloud-top level and cloud cover
     subroutine clouds(qa,rh,precnv,precls,iptop,gse,fmask,icltop,cloudc,clstr)
         integer :: iptop(ix,il)
-        real(p), intent(in) :: qa(ix,il,kx)   !! Specific humidity [g/kg]
-        real(p), intent(in) :: rh(ix,il,kx)   !! Relative humidity
-        real(p), intent(in) :: precnv(ix,il)  !! Convection precipitation
-        real(p), intent(in) :: precls(ix,il)  !! Large-scale condensational precipitation
-        real(p), intent(in) :: gse(ix,il)     !! Vertical gradient of dry static energy
-        real(p), intent(in) :: fmask(ix,il)   !! Fraction land-sea mask
+        real(kind=8), intent(in) :: qa(ix,il,kx)   !! Specific humidity [g/kg]
+        real(kind=8), intent(in) :: rh(ix,il,kx)   !! Relative humidity
+        real(kind=8), intent(in) :: precnv(ix,il)  !! Convection precipitation
+        real(kind=8), intent(in) :: precls(ix,il)  !! Large-scale condensational precipitation
+        real(kind=8), intent(in) :: gse(ix,il)     !! Vertical gradient of dry static energy
+        real(kind=8), intent(in) :: fmask(ix,il)   !! Fraction land-sea mask
         integer, intent(out) :: icltop(ix,il) !! Cloud top level
-        real(p), intent(out) :: cloudc(ix,il) !! Total cloud cover
-        real(p), intent(out) :: clstr(ix,il)  !! Stratiform cloud cover
+        real(kind=8), intent(out) :: cloudc(ix,il) !! Total cloud cover
+        real(kind=8), intent(out) :: clstr(ix,il)  !! Stratiform cloud cover
 
         integer :: i, j, k, nl1, nlp
-        real(p) :: clfact, clstrl, drh, fstab, pr1, rgse, rrcl
+        real(kind=8) :: clfact, clstrl, drh, fstab, pr1, rgse, rrcl
 
         nl1  = kx-1
         nlp  = kx+1

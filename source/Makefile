@@ -17,11 +17,11 @@ BASE=-fconvert=swap -Wall
 # Optimisation flags (disabled for debugging, profiling etc.)
 OPT=-Ofast
 
-# # Location of NetCDF module (netcdf.mod)
-INC=-I$(NETCDF)/include
+# 
+INC=
 
 # Library flags
-LIB=-L$(NETCDF)/lib -lnetcdff -lnetcdf
+LIB=
 
 FILES= \
 	   auxiliaries.o \

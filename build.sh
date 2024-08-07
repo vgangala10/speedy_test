@@ -33,4 +33,4 @@ else
     make -f $MAKE -s || { echo "Compilation failed"; exit 1; }
 fi
 
-rm *.f90 *.o $MAKE *.mod
+#rm *.f90 *.o $MAKE *.mod

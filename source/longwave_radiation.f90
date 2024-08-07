@@ -1,6 +1,6 @@
 !> Parametrization of long-wave radiation
 module longwave_radiation
-    use types, only: p
+    
     use params
 
     implicit none
@@ -17,14 +17,14 @@ contains
         use physical_constants, only: sbc, wvi
         use mod_radcon, only: epslw, emisfc, fband, tau2, st4a, flux
 
-        real(p), intent(in)  :: ta(ix,il,kx)    !! Absolute temperature [K]
-        real(p), intent(out) :: fsfcd(ix,il)    !! Downward flux of long-wave radiation at the surface
-        real(p), intent(out) :: dfabs(ix,il,kx) !! Flux of long-wave radiation absorbed in each
+        real(kind=8), intent(in)  :: ta(ix,il,kx)    !! Absolute temperature [K]
+        real(kind=8), intent(out) :: fsfcd(ix,il)    !! Downward flux of long-wave radiation at the surface
+        real(kind=8), intent(out) :: dfabs(ix,il,kx) !! Flux of long-wave radiation absorbed in each
                                              !! atmospheric layer
 
         integer :: i, j, jb, k, nl1
-        real(p) :: anis, brad, corlw(ix,il), emis
-        real(p) :: st3a(ix,il)
+        real(kind=8) :: anis, brad, corlw(ix,il), emis
+        real(kind=8) :: st3a(ix,il)
 
         nl1 = kx - 1
 
@@ -121,20 +121,20 @@ contains
         use geometry, only: dhs
         use mod_radcon, only: epslw, emisfc, fband, tau2, st4a, stratc, flux
 
-        real(p), intent(in)    :: ta(ix,il,kx)    !! Absolute temperature
-        real(p), intent(in)    :: ts(ix,il)       !! Surface temperature
-        real(p), intent(in)    :: fsfcd(ix,il)    !! Downward flux of long-wave radiation at the
+        real(kind=8), intent(in)    :: ta(ix,il,kx)    !! Absolute temperature
+        real(kind=8), intent(in)    :: ts(ix,il)       !! Surface temperature
+        real(kind=8), intent(in)    :: fsfcd(ix,il)    !! Downward flux of long-wave radiation at the
                                                !! surface
-        real(p), intent(in)    :: fsfcu(ix,il)    !! Surface blackbody emission
-        real(p), intent(out)   :: fsfc(ix,il)     !! Net upward flux of long-wave radiation at the
+        real(kind=8), intent(in)    :: fsfcu(ix,il)    !! Surface blackbody emission
+        real(kind=8), intent(out)   :: fsfc(ix,il)     !! Net upward flux of long-wave radiation at the
                                                !! surface
-        real(p), intent(out)   :: ftop(ix,il)     !! Outgoing flux of long-wave radiation at the
+        real(kind=8), intent(out)   :: ftop(ix,il)     !! Outgoing flux of long-wave radiation at the
                                                !! top of the atmosphere
-        real(p), intent(inout) :: dfabs(ix,il,kx) !! Flux of long-wave radiation absorbed in each
+        real(kind=8), intent(inout) :: dfabs(ix,il,kx) !! Flux of long-wave radiation absorbed in each
                                                !! atmospheric layer
 
         integer :: i, j, jb, k
-        real(p) :: brad, corlw1(ix,il), corlw2(ix,il), emis, refsfc
+        real(kind=8) :: brad, corlw1(ix,il), corlw2(ix,il), emis, refsfc
 
         refsfc = 1.0 - emisfc
         fsfc = fsfcu - fsfcd
@@ -198,7 +198,7 @@ contains
         use mod_radcon, only: epslw, fband
 
         integer :: jb, jtemp
-        real(p) :: eps1
+        real(kind=8) :: eps1
 
         eps1 = 1.0 - epslw
 

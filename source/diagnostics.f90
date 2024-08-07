@@ -2,7 +2,7 @@
 !  date: 01/05/2019
 !  For checking model diagnostics in case of numerical instability.
 module diagnostics
-    use types, only: p
+    
 
     implicit none
 
@@ -17,14 +17,14 @@ contains
         use params
         use spectral, only: inverse_laplacian
 
-        complex(p), dimension(mx,nx,kx), intent(in) :: vor   !! Spectral vorticity
-        complex(p), dimension(mx,nx,kx), intent(in) :: div   !! Spectral divergence
-        complex(p), dimension(mx,nx,kx), intent(in) :: t     !! Spectral temperature
+        complex(kind=8), dimension(mx,nx,kx), intent(in) :: vor   !! Spectral vorticity
+        complex(kind=8), dimension(mx,nx,kx), intent(in) :: div   !! Spectral divergence
+        complex(kind=8), dimension(mx,nx,kx), intent(in) :: t     !! Spectral temperature
         integer, intent(in)                         :: istep !! Current time step
 
         integer :: k, m, n, kk
-        complex(p) :: temp(mx,nx)
-        real(p) :: diag(kx,3)
+        complex(kind=8) :: temp(mx,nx)
+        real(kind=8) :: diag(kx,3)
 
         ! 1. Get global-mean temperature and compute eddy kinetic energy
         do k = 1, kx

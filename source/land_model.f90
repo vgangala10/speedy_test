@@ -2,7 +2,7 @@
 !  date: 09/05/2019
 !  For running the land-surface model.
 module land_model
-    use types, only: p
+    
     use params
 
     implicit none
@@ -14,33 +14,33 @@ module land_model
     public land_coupling_flag
     public sd2sc
 
-    real(p) :: rhcapl(ix,il) !! 1/heat capacity (land)
-    real(p) :: cdland(ix,il) !! 1/dissipation time (land)
+    real(kind=8) :: rhcapl(ix,il) !! 1/heat capacity (land)
+    real(kind=8) :: cdland(ix,il) !! 1/dissipation time (land)
 
     ! Daily observed climatological fields over land
-    real(p) :: stlcl_ob(ix,il)   !! Climatological land surface temperature
-    real(p) :: snowdcl_ob(ix,il) !! Climatological snow depth (water equivalent)
-    real(p) :: soilwcl_ob(ix,il) !! Climatological soil water availability
+    real(kind=8) :: stlcl_ob(ix,il)   !! Climatological land surface temperature
+    real(kind=8) :: snowdcl_ob(ix,il) !! Climatological snow depth (water equivalent)
+    real(kind=8) :: soilwcl_ob(ix,il) !! Climatological soil water availability
 
     ! Land surface fields used by atmospheric model
-    real(p) :: stl_am(ix,il)   !! Land surface temperature
-    real(p) :: snowd_am(ix,il) !! Snow depth (water equivalent)
-    real(p) :: soilw_am(ix,il) !! Soil water availability
+    real(kind=8) :: stl_am(ix,il)   !! Land surface temperature
+    real(kind=8) :: snowd_am(ix,il) !! Snow depth (water equivalent)
+    real(kind=8) :: soilw_am(ix,il) !! Soil water availability
 
     ! Land surface fields from land model
-    real(p) :: stl_lm(ix,il) !! Land-model surface temperature
+    real(kind=8) :: stl_lm(ix,il) !! Land-model surface temperature
 
     ! Land masks
-    real(p) :: fmask_l(ix,il) !! Fraction of land
-    real(p) :: bmask_l(ix,il) !! Binary land mask
+    real(kind=8) :: fmask_l(ix,il) !! Fraction of land
+    real(kind=8) :: bmask_l(ix,il) !! Binary land mask
 
-    real(p) :: stl12(ix,il,12)   !! Land surface temperature monthly-mean climatology
-    real(p) :: snowd12(ix,il,12) !! Snow depth (water equivalent) monthly-mean climatology
-    real(p) :: soilw12(ix,il,12) !! Soil water availability monthly-mean climatology
+    real(kind=8) :: stl12(ix,il,12)   !! Land surface temperature monthly-mean climatology
+    real(kind=8) :: snowd12(ix,il,12) !! Snow depth (water equivalent) monthly-mean climatology
+    real(kind=8) :: soilw12(ix,il,12) !! Soil water availability monthly-mean climatology
 
     integer :: land_coupling_flag = 1 !! Flag for land-coupling (0: off, 1: on)
 
-    real(p), parameter :: sd2sc = 60.0 !! Snow depth (mm water) corresponding to snow cover = 1
+    real(kind=8), parameter :: sd2sc = 60.0 !! Snow depth (mm water) corresponding to snow cover = 1
 
 contains
     !> Initializes land model.
@@ -50,22 +50,22 @@ contains
 
         ! Auxiliary variables
         integer :: i, j, month
-        real(p) :: dmask(ix,il) ! domain mask
-        real(p) :: depth_soil, depth_lice, tdland, hcapl, hcapli, flandmin
+        real(kind=8) :: dmask(ix,il) ! domain mask
+        real(kind=8) :: depth_soil, depth_lice, tdland, hcapl, hcapli, flandmin
 
         ! Soil moisture parameters
         ! Soil wetness at field capacity (volume fraction)
-        real(p) :: swcap = 0.30
+        real(kind=8) :: swcap = 0.30
 
         ! Soil wetness at wilting point  (volume fraction)
-        real(p) :: swwil = 0.17
+        real(kind=8) :: swwil = 0.17
 
         ! Threshold for land-sea mask definition (i.e. minimum fraction of
         ! either land or sea)
-        real(p) :: thrsh = 0.1
+        real(kind=8) :: thrsh = 0.1
 
-        real(p) :: rsw, sdep1, sdep2, swroot, swwil2
-        real(p), dimension(ix,il) :: veg_low, veg_high, veg, swl1, swl2
+        real(kind=8) :: rsw, sdep1, sdep2, swroot, swwil2
+        real(kind=8), dimension(ix,il) :: veg_low, veg_high, veg, swl1, swl2
         integer :: idep2
 
         ! =========================================================================
@@ -90,17 +90,17 @@ contains
         do month = 1, 12
             stl12(:,:,month) = load_boundary_file("land.nc", "stl", month)
 
-            call fillsf(stl12(:,:,month), 0.0_p)
+            call fillsf(stl12(:,:,month), 0.0_8)
         end do
 
-        call forchk(bmask_l, 12, 0.0_p, 400.0_p, 273.0_p, stl12)
+        call forchk(bmask_l, 12, 0.0_8, 400.0_8, 273.0_8, stl12)
 
         ! Snow depth
         do month = 1, 12
             snowd12(:,:,month) = load_boundary_file("snow.nc", "snowd", month)
         end do
 
-        call forchk(bmask_l, 12, 0.0_p, 20000.0_p, 0.0_p, snowd12)
+        call forchk(bmask_l, 12, 0.0_8, 20000.0_8, 0.0_8, snowd12)
 
         ! Read soil moisture and compute soil water availability using vegetation fraction
         ! Read vegetation fraction
@@ -132,7 +132,7 @@ contains
             end do
         end do
 
-        call forchk(bmask_l, 12, 0.0_p, 10.0_p, 0.0_p, soilw12)
+        call forchk(bmask_l, 12, 0.0_8, 10.0_8, 0.0_8, soilw12)
 
         ! =========================================================================
         ! Set heat capacities and dissipation times for soil and ice-sheet layers
@@ -182,21 +182,26 @@ contains
 
     !> Exchanges fluxes between land and atmosphere.
     subroutine couple_land_atm(day)
-        use date, only: imont1
-        use interpolation, only: forin5, forint
+        !use date, only: imont1
+        ! use interpolation, only: forin5, forint
 
         integer, intent(in) :: day !! The day (starting at 0 for the first time step)
 
-        ! Interpolate climatological fields to actual date
+        ! ----- WARNING ------- !
+        !imont1 = 1 ! FIXME!! - This is a hack used purely for testing purposes so I don't have to import date
+
+        ! Interpolate climatological fields to actual date ! FIXME - SKipping interpolation too
 
         ! Climatological land surface temperature
-        call forin5(imont1, stl12, stlcl_ob)
+        ! call forin5(imont1, stl12, stlcl_ob)
 
         ! Climatological snow depth
-        call forint(imont1, snowd12, snowdcl_ob)
+        ! call forint(imont1, snowd12, snowdcl_ob)
 
         ! Climatological soil water availability
-        call forint(imont1, soilw12, soilwcl_ob)
+        ! call forint(imont1, soilw12, soilwcl_ob)
+
+        ! ----- WARNING ------- !
 
         ! If it's the first day then initialise the land surface
         ! temperature from climatology
@@ -225,7 +230,7 @@ contains
         use auxiliaries, only: hfluxn
 
         ! Surface temperature anomaly
-        real(p) :: tanom(ix,il)
+        real(kind=8) :: tanom(ix,il)
 
         ! Land-surface (soil/ice-sheet) layer
         ! Anomaly w.r.t. final-time climatological temperature

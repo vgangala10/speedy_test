@@ -1,5 +1,5 @@
 module time_stepping
-    use types, only: p
+    
     use params
 
     implicit none
@@ -40,12 +40,12 @@ contains
         use tendencies, only: get_tendencies
 
         integer, intent(in) :: j1, j2
-        real(p), intent(in) :: dt
-        complex(p), dimension(mx,nx,kx) ::  vordt, divdt, tdt
-        complex(p) :: psdt(mx,nx), trdt(mx,nx,kx,ntr)
-        real(p) :: eps, sdrag
+        real(kind=8), intent(in) :: dt
+        complex(kind=8), dimension(mx,nx,kx) ::  vordt, divdt, tdt
+        complex(kind=8) :: psdt(mx,nx), trdt(mx,nx,kx,ntr)
+        real(kind=8) :: eps, sdrag
 
-        complex(p) :: ctmp(mx,nx,kx)
+        complex(kind=8) :: ctmp(mx,nx,kx)
 
         integer :: n, itr, k, m
 
@@ -128,10 +128,10 @@ contains
         use spectral, only: trunct
 
         integer, intent(in) :: j1
-        real(p), intent(in) :: dt, eps
-        complex(p), intent(inout) :: fdt(mx,nx,kx)
-        complex(p), intent(in) :: input(mx,nx,kx,2)
-        complex(p) :: output(mx,nx,kx,2)
+        real(kind=8), intent(in) :: dt, eps
+        complex(kind=8), intent(inout) :: fdt(mx,nx,kx)
+        complex(kind=8), intent(in) :: input(mx,nx,kx,2)
+        complex(kind=8) :: output(mx,nx,kx,2)
         integer :: k
 
         do k = 1, kx
@@ -143,12 +143,12 @@ contains
         use spectral, only: trunct
 
         integer, intent(in) :: j1
-        real(p), intent(in) :: dt, eps
-        complex(p), intent(inout) :: fdt(mx,nx)
-        complex(p), intent(in) :: input(mx,nx,2)
-        complex(p) :: output(mx,nx,2)
-        real(p) :: eps2
-        complex(p) :: fnew(mx,nx)
+        real(kind=8), intent(in) :: dt, eps
+        complex(kind=8), intent(inout) :: fdt(mx,nx)
+        complex(kind=8), intent(in) :: input(mx,nx,2)
+        complex(kind=8) :: output(mx,nx,2)
+        real(kind=8) :: eps2
+        complex(kind=8) :: fnew(mx,nx)
 
         output = input
 
